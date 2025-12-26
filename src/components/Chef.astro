@@ -1,0 +1,103 @@
+---
+
+---
+
+<section id="chef" class="chef-section">
+    <div class="container">
+        <div class="chef-grid">
+            <div class="chef-image">
+                <img
+                    src="/images/chef-ramiro.jpg"
+                    alt="Chef Ramiro Martínez en la cocina"
+                    loading="lazy"
+                />
+            </div>
+            <div class="chef-content">
+                <h2>Chef Ramiro Martínez</h2>
+                <p class="chef-subtitle">40 años de cocina vivida</p>
+                <div class="chef-text">
+                    <p>
+                        Tradición e innovación en cada plato. Con cuatro décadas
+                        de experiencia, el Chef Ramiro Martínez ha dedicado su
+                        vida a perfeccionar el arte de la cocina honesta.
+                    </p>
+                    <p>
+                        Su filosofía es simple pero profunda: dejar que los
+                        ingredientes hablen por sí mismos, respetando su esencia
+                        y elevándolos a través de técnicas refinadas pero nunca
+                        ostentosas.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .chef-section {
+        background-color: var(--color-bg-dark);
+        color: var(--color-text-light);
+        padding: var(--spacing-xxl) 0;
+    }
+
+    .chef-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-xl);
+        align-items: center;
+    }
+
+    .chef-image {
+        position: relative;
+        aspect-ratio: 4 / 5;
+        overflow: hidden;
+    }
+
+    .chef-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(100%) contrast(1.1);
+        transition: transform var(--transition-smooth);
+    }
+
+    .chef-image:hover img {
+        transform: scale(1.05);
+    }
+
+    .chef-content h2 {
+        font-size: clamp(2rem, 3vw, 3.5rem);
+        font-weight: 300;
+        margin-bottom: 0.5rem;
+        color: var(--color-secondary);
+    }
+
+    .chef-subtitle {
+        font-size: 1.25rem;
+        font-style: italic;
+        color: var(--color-accent);
+        margin-bottom: var(--spacing-md);
+    }
+
+    .chef-text p {
+        font-size: 1.125rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.85);
+        margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 968px) {
+        .chef-section {
+            padding: var(--spacing-lg) 0;
+        }
+
+        .chef-grid {
+            grid-template-columns: 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .chef-image {
+            aspect-ratio: 16 / 9;
+        }
+    }
+</style>

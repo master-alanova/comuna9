@@ -1,0 +1,98 @@
+---
+
+---
+
+<section id="concepto" class="concepto">
+    <div class="container">
+        <div class="concepto-content">
+            <h2>Comida Noble</h2>
+            <div class="concepto-text">
+                <p class="lead">
+                    Menos es más: platos con identidad, ingredientes que se
+                    entienden y una experiencia donde el diseño acompaña a la
+                    calidad.
+                </p>
+                <p>
+                    En Comuna 9, cada ingrediente cuenta una historia.
+                    Trabajamos con productos de estación, respetando los ciclos
+                    naturales y celebrando la cocina honesta. Sin artificios,
+                    sin pretensiones – solo lo esencial.
+                </p>
+            </div>
+            <div class="concepto-keywords">
+                <span class="keyword">Cocina Honesta</span>
+                <span class="keyword">Ingredientes Naturales</span>
+                <span class="keyword">Sustentabilidad</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .concepto {
+        background-color: var(--color-bg-light);
+        padding: var(--spacing-xxl) 0;
+    }
+
+    .concepto-content {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .concepto h2 {
+        font-size: clamp(2.5rem, 4vw, 4rem);
+        font-weight: 300;
+        margin-bottom: var(--spacing-lg);
+        color: var(--color-primary);
+    }
+
+    .concepto-text {
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .lead {
+        font-size: clamp(1.25rem, 2vw, 1.5rem);
+        font-weight: 400;
+        color: var(--color-text-primary);
+        margin-bottom: var(--spacing-md);
+        line-height: 1.7;
+    }
+
+    .concepto-text p {
+        font-size: 1.125rem;
+        color: var(--color-text-secondary);
+        line-height: 1.8;
+    }
+
+    .concepto-keywords {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .keyword {
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--color-accent);
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--color-accent);
+    }
+
+    @media (max-width: 768px) {
+        .concepto {
+            padding: var(--spacing-lg) 0;
+        }
+
+        .concepto-keywords {
+            gap: 1rem;
+        }
+
+        .keyword {
+            font-size: 0.75rem;
+        }
+    }
+</style>

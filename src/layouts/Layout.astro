@@ -1,0 +1,206 @@
+---
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const {
+	title,
+	description = "En el corazón de Mataderos, celebramos lo esencial: productos sin artificios y una mesa bien puesta",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<link
+			rel="apple-touch-icon"
+			sizes="57x57"
+			href="/apple-icon-57x57.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="60x60"
+			href="/apple-icon-60x60.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="72x72"
+			href="/apple-icon-72x72.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="76x76"
+			href="/apple-icon-76x76.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="114x114"
+			href="/apple-icon-114x114.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="120x120"
+			href="/apple-icon-120x120.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="144x144"
+			href="/apple-icon-144x144.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="152x152"
+			href="/apple-icon-152x152.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="/apple-icon-180x180.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="192x192"
+			href="/android-icon-192x192.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="/favicon-32x32.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="96x96"
+			href="/favicon-96x96.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="16x16"
+			href="/favicon-16x16.png"
+		/>
+		<link rel="manifest" href="/manifest.json" />
+		<meta name="msapplication-TileColor" content="#ffffff" />
+		<meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
+		<meta name="theme-color" content="#ffffff" />
+
+		<link rel="canonical" href={Astro.url.href} />
+		<meta name="description" content={description} />
+		<meta name="generator" content={Astro.generator} />
+
+		<!-- SEO Meta Tags -->
+		<meta name="robots" content="index, follow" />
+		<meta
+			name="keywords"
+			content="Comuna 9, restaurante Mataderos, cocina de estación, comida noble, Chef Ramiro Martínez, restaurante Buenos Aires"
+		/>
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:site_name" content="Comuna 9" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={Astro.url.href} />
+		<meta
+			property="og:image"
+			content={new URL("/og-image.jpg", Astro.url)}
+		/>
+		<meta
+			property="og:image:url"
+			content={new URL("/og-image.jpg", Astro.url)}
+		/>
+		<meta
+			property="og:image:secure_url"
+			content={new URL("/og-image.jpg", Astro.url)}
+		/>
+		<meta property="og:image:type" content="image/jpeg" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="600" />
+		<meta property="og:image:alt" content="Comuna 9 - Cocina de Estación" />
+		<meta property="og:locale" content="es_AR" />
+
+		<!-- Twitter -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta
+			name="twitter:image"
+			content={new URL("/og-image.jpg", Astro.url)}
+		/>
+		<meta
+			name="twitter:image:alt"
+			content="Comuna 9 - Cocina de Estación"
+		/>
+		<meta name="twitter:domain" content="comuna9.ar" />
+
+		<!-- Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+			rel="stylesheet"
+		/>
+
+		<title>{title}</title>
+
+		<!-- Schema.org JSON-LD -->
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "Restaurant",
+				"name": "Comuna 9",
+				"image": "https://comuna9.ar/og-image.jpg",
+				"description": "Cocina de estación en Mataderos. Comida Noble con productos sin artificios.",
+				"address": {
+					"@type": "PostalAddress",
+					"streetAddress": "García de Cossio 6730",
+					"addressLocality": "Mataderos, Buenos Aires",
+					"addressRegion": "CABA",
+					"addressCountry": "AR"
+				},
+				"geo": {
+					"@type": "GeoCoordinates",
+					"latitude": -34.6686,
+					"longitude": -58.5147
+				},
+				"url": "https://comuna9.ar",
+				"telephone": "+54 9 11 XXXX-XXXX",
+				"servesCuisine": "Cocina de Estación Argentina",
+				"priceRange": "$$",
+				"openingHoursSpecification": [
+					{
+						"@type": "OpeningHoursSpecification",
+						"dayOfWeek": [
+							"Monday",
+							"Tuesday",
+							"Wednesday",
+							"Thursday",
+							"Friday"
+						],
+						"opens": "16:00",
+						"closes": "23:00"
+					},
+					{
+						"@type": "OpeningHoursSpecification",
+						"dayOfWeek": ["Saturday", "Sunday"],
+						"opens": "12:00",
+						"closes": "23:00"
+					}
+				],
+				"acceptsReservations": "True"
+			}
+		</script>
+	</head>
+	<body>
+		<slot />
+		<style is:global>
+			@import "../styles/global.css";
+		</style>
+	</body>
+</html>

@@ -1,0 +1,130 @@
+---
+
+---
+
+<section class="experience">
+    <div class="container">
+        <h2 class="section-title">La Experiencia</h2>
+        <div class="experience-grid">
+            <div class="experience-item large">
+                <img
+                    src="/images/experience-1.jpg"
+                    alt="Plato de Comuna 9"
+                    loading="lazy"
+                />
+            </div>
+            <div class="experience-item">
+                <img
+                    src="/images/experience-2.jpg"
+                    alt="Interior del restaurante"
+                    loading="lazy"
+                />
+            </div>
+            <div class="experience-item">
+                <img
+                    src="/images/experience-3.jpg"
+                    alt="Detalle de ingredientes"
+                    loading="lazy"
+                />
+            </div>
+            <div class="experience-item vertical">
+                <img
+                    src="/images/experience-4.jpg"
+                    alt="Ambiente Comuna 9"
+                    loading="lazy"
+                />
+            </div>
+            <div class="experience-item">
+                <img
+                    src="/images/experience-5.jpg"
+                    alt="Cocina en acción"
+                    loading="lazy"
+                />
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .experience {
+        background-color: var(--color-bg-light);
+        padding: var(--spacing-xxl) 0;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: clamp(2.5rem, 4vw, 4rem);
+        font-weight: 300;
+        margin-bottom: var(--spacing-xl);
+        color: var(--color-primary);
+    }
+
+    .experience-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: 250px;
+        gap: 1.5rem;
+    }
+
+    .experience-item {
+        position: relative;
+        overflow: hidden;
+        background-color: var(--color-bg-dark);
+    }
+
+    .experience-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        filter: brightness(0.9) contrast(1.1);
+    }
+
+    .experience-item:hover img {
+        transform: scale(1.1);
+    }
+
+    /* Asymmetric Grid Layout */
+    .experience-item:nth-child(1) {
+        grid-column: span 4;
+        grid-row: span 2;
+    }
+
+    .experience-item:nth-child(2) {
+        grid-column: span 2;
+    }
+
+    .experience-item:nth-child(3) {
+        grid-column: span 2;
+    }
+
+    .experience-item:nth-child(4) {
+        grid-column: span 2;
+        grid-row: span 2;
+    }
+
+    .experience-item:nth-child(5) {
+        grid-column: span 4;
+    }
+
+    @media (max-width: 968px) {
+        .experience-grid {
+            grid-template-columns: repeat(2, 1fr);
+            grid-auto-rows: 200px;
+            gap: 1rem;
+        }
+
+        .experience-item:nth-child(1),
+        .experience-item:nth-child(2),
+        .experience-item:nth-child(3),
+        .experience-item:nth-child(4),
+        .experience-item:nth-child(5) {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+
+        .experience-item:nth-child(1) {
+            grid-column: span 2;
+        }
+    }
+</style>
