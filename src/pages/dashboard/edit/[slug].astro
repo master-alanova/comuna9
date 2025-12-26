@@ -3,19 +3,17 @@ import Layout from "../../../layouts/Layout.astro";
 import { supabase } from "../../../lib/supabase";
 
 const { slug } = Astro.params;
-// const user = Astro.locals.user;
-
 const user = import.meta.env.ADMIN_USERNAME;
-// 1. Verificaciones de seguridad
+
+// 1. Seguridad
 if (!user) return Astro.redirect("/login");
 if (!slug) return Astro.redirect("/dashboard");
 
-// 2. Definimos las variables de estado (Esto faltaba y causaba el error)
+// 2. Definir variables de estado
 let error = null;
 let success = false;
-const content = ""; // Definimos vacío para evitar errores si tu HTML lo llama
 
-// 3. Definimos las categorías (Esto faltaba antes)
+// 3. ¡ESTO ES LO QUE TE FALTA! Definir las categorías
 const categories = [
     "Desayunos & Brunch",
     "Cafetería de Especialidad",
@@ -24,39 +22,46 @@ const categories = [
     "Bebidas",
 ];
 
-// 4. Lógica para GUARDAR los cambios (POST)
+// 4. Lógica de Guardado (POST)
 if (Astro.request.method === "POST") {
     try {
         const formData = await Astro.request.formData();
-        formData.append("slug", slug); // Aseguramos que el slug vaya en los datos
 
-        // Llamamos a tu API (que ya arreglaste para usar Supabase)
-        const response = await fetch(new URL("/api/menu/update", Astro.url), {
-            method: "POST",
-            body: formData,
-        });
+        // Convertir datos del formulario
+        const updates = {
+            title: formData.get("title")?.toString(),
+            category: formData.get("category")?.toString(),
+            price: Number(formData.get("price")),
+            order: Number(formData.get("order")),
+            description: formData.get("description")?.toString(),
+            image: formData.get("image")?.toString(),
+            published: formData.get("published") === "true", // Checkbox retorna "true" o null
+        };
 
-        if (response.ok) {
-            success = true;
+        const { error: updateError } = await supabase
+            .from("menu_items")
+            .update(updates)
+            .eq("slug", slug);
+
+        if (updateError) {
+            error = updateError.message;
         } else {
-            const data = await response.json();
-            error = data.error || "Error al actualizar el item";
+            success = true;
         }
     } catch (e) {
-        error = "Error al procesar la solicitud";
+        error = "Error inesperado al guardar.";
         console.error(e);
     }
 }
 
-// 5. Buscar el item actual en la base de datos para mostrarlo
-const { data: item, error: dbError } = await supabase
+// 5. Cargar datos iniciales
+const { data: item, error: loadError } = await supabase
     .from("menu_items")
     .select("*")
     .eq("slug", slug)
     .single();
 
-if (dbError || !item) {
-    console.error("Item no encontrado:", dbError);
+if (loadError || !item) {
     return Astro.redirect("/dashboard");
 }
 ---
