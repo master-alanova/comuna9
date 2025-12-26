@@ -31,13 +31,21 @@ const itemsByCategory = sortedItems.reduce(
     {} as Record<string, typeof sortedItems>,
 );
 
-// Define category order
 const categoryOrder = [
-    "Desayunos & Brunch",
-    "Cafetería de Especialidad",
+    "Café de Especialidad",
+    "Combos",
+    "Brunch",
+    "Entre panes - Baguetín o Focaccia",
+    "Entrantes & Acompañamientos",
     "Platos Principales",
     "Postres",
+    "Vinos - Espumantes & Pet - Nat",
+    "Vinos - Rosados & Claretes",
+    "Vinos - Naranjos",
+    "Vinos - Blancos",
+    "Vinos - Tintos",
     "Bebidas",
+    "Tragos & Cócteles",
 ];
 
 const sortedCategories = Object.keys(itemsByCategory).sort((a, b) => {
