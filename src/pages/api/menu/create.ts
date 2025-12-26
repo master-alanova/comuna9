@@ -6,7 +6,7 @@ export const POST: APIRoute = async ({ request }) => {
         const formData = await request.formData();
         const title = formData.get('title')?.toString();
 
-        // Creamos un slug simple basado en el título
+        // Generamos un "slug" (identificador) limpio
         const slug = title?.toLowerCase()
             .trim()
             .replace(/[^\w\s-]/g, '')
@@ -27,13 +27,11 @@ export const POST: APIRoute = async ({ request }) => {
         const { error } = await supabase.from('menu_items').insert(newItem);
 
         if (error) {
-            console.error('Supabase error:', error);
             return new Response(JSON.stringify({ error: error.message }), { status: 500 });
         }
 
         return new Response(JSON.stringify({ success: true, slug }), { status: 200 });
     } catch (error) {
-        console.error('Server error:', error);
         return new Response(JSON.stringify({ error: 'Error creating item' }), { status: 500 });
     }
 };

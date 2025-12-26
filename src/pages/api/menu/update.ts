@@ -24,7 +24,6 @@ export const POST: APIRoute = async ({ request }) => {
             .eq('slug', slug);
 
         if (error) {
-            console.error('Supabase error:', error);
             return new Response(JSON.stringify({ error: error.message }), { status: 500 });
         }
 

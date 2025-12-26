@@ -1,14 +1,14 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { formatPrice } from "../../lib/utils";
-import { supabase } from "../../lib/supabase"; // Importar supabase
+import { supabase } from "../../lib/supabase";
 
 const user = Astro.locals.user;
 if (!user) {
     return Astro.redirect("/login");
 }
 
-// --- LOGICA NUEVA ---
+// === CAMBIO AQUÍ: Leemos todos los items de la DB ===
 const { data: menuItems } = await supabase
     .from("menu_items")
     .select("*")
@@ -16,7 +16,6 @@ const { data: menuItems } = await supabase
     .order("order", { ascending: true });
 
 const sortedItems = menuItems || [];
-// --------------------
 
 if (Astro.request.method === "POST") {
     const formData = await Astro.request.formData();

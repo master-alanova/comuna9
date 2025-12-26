@@ -12,10 +12,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
         .delete()
         .eq('slug', slug);
 
-    if (error) {
-        console.error('Supabase error:', error);
-        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
-    }
+    if (error) return new Response("Error deleting", { status: 500 });
 
     return redirect('/dashboard');
 };

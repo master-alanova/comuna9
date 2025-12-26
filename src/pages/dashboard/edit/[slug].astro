@@ -1,16 +1,14 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-import { supabase } from "../../../lib/supabase"; // Importar
+import { supabase } from "../../../lib/supabase";
 
 const { slug } = Astro.params;
-
-// Validar usuario
 const user = Astro.locals.user;
-if (!user) return Astro.redirect("/login");
 
+if (!user) return Astro.redirect("/login");
 if (!slug) return Astro.redirect("/dashboard");
 
-// --- LOGICA NUEVA ---
+// === CAMBIO AQUÍ: Buscamos el item específico en la DB ===
 const { data: item, error } = await supabase
     .from("menu_items")
     .select("*")
@@ -20,7 +18,6 @@ const { data: item, error } = await supabase
 if (error || !item) {
     return Astro.redirect("/dashboard");
 }
-// --------------------
 ---
 
 <Layout title={`Editar ${item.title} - Dashboard`}>
