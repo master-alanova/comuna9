@@ -1,20 +1,23 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getCollection } from "astro:content";
 import { formatPrice } from "../../lib/utils";
+import { supabase } from "../../lib/supabase"; // Importar supabase
 
-// Get all menu items
-const allMenuItems = await getCollection("menuItems");
+const user = Astro.locals.user;
+if (!user) {
+    return Astro.redirect("/login");
+}
 
-// Sort by category and order
-const sortedItems = allMenuItems.sort((a, b) => {
-    if (a.data.category === b.data.category) {
-        return a.data.order - b.data.order;
-    }
-    return a.data.category.localeCompare(b.data.category);
-});
+// --- LOGICA NUEVA ---
+const { data: menuItems } = await supabase
+    .from("menu_items")
+    .select("*")
+    .order("category", { ascending: true })
+    .order("order", { ascending: true });
 
-// Handle logout
+const sortedItems = menuItems || [];
+// --------------------
+
 if (Astro.request.method === "POST") {
     const formData = await Astro.request.formData();
     if (formData.get("action") === "logout") {
@@ -23,8 +26,6 @@ if (Astro.request.method === "POST") {
         return Astro.redirect("/login", 302);
     }
 }
-
-const user = Astro.locals.user;
 ---
 
 <Layout title="Dashboard - Comuna 9">

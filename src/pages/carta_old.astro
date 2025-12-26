@@ -3,30 +3,35 @@ import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import MenuCard from "../components/MenuCard.astro";
-import { supabase } from "../lib/supabase"; // <--- Importamos supabase
+import { getCollection } from "astro:content";
 
-// --- LOGICA NUEVA ---
-const { data: menuItems, error } = await supabase
-    .from("menu_items")
-    .select("*")
-    .eq("published", true)
-    .order("order", { ascending: true });
+// Get all published menu items
+const allMenuItems = await getCollection("menuItems", ({ data }) => {
+    return data.published === true;
+});
 
-if (error) console.error("Error fetching menu:", error);
-
-const allMenuItems = menuItems || [];
-// --------------------
-
-// Agrupamos por categoría (esto se mantiene casi igual, pero aseguramos tipos)
-const itemsByCategory = allMenuItems.reduce((acc: any, item: any) => {
-    const category = item.category;
-    if (!acc[category]) {
-        acc[category] = [];
+// Sort by order within each category
+const sortedItems = allMenuItems.sort((a, b) => {
+    if (a.data.category === b.data.category) {
+        return a.data.order - b.data.order;
     }
-    acc[category].push(item);
-    return acc;
-}, {});
+    return 0;
+});
 
+// Group by category
+const itemsByCategory = sortedItems.reduce(
+    (acc, item) => {
+        const category = item.data.category;
+        if (!acc[category]) {
+            acc[category] = [];
+        }
+        acc[category].push(item);
+        return acc;
+    },
+    {} as Record<string, typeof sortedItems>,
+);
+
+// Define category order
 const categoryOrder = [
     "Desayunos & Brunch",
     "Cafetería de Especialidad",
@@ -38,9 +43,11 @@ const categoryOrder = [
 const sortedCategories = Object.keys(itemsByCategory).sort((a, b) => {
     const indexA = categoryOrder.indexOf(a);
     const indexB = categoryOrder.indexOf(b);
+
     if (indexA === -1 && indexB === -1) return 0;
     if (indexA === -1) return 1;
     if (indexB === -1) return -1;
+
     return indexA - indexB;
 });
 ---

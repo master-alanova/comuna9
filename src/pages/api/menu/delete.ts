@@ -1,30 +1,21 @@
 import type { APIRoute } from 'astro';
-import { unlink } from 'node:fs/promises';
-import { join } from 'node:path';
+import { supabase } from '../../../lib/supabase';
 
 export const POST: APIRoute = async ({ request, redirect }) => {
-    try {
-        const formData = await request.formData();
-        const slug = formData.get('slug')?.toString();
+    const formData = await request.formData();
+    const slug = formData.get('slug')?.toString();
 
-        if (!slug) {
-            return new Response(JSON.stringify({ error: 'Missing slug' }), {
-                status: 400,
-                headers: { 'Content-Type': 'application/json' },
-            });
-        }
+    if (!slug) return new Response("Missing slug", { status: 400 });
 
-        // Delete file
-        const filePath = join(process.cwd(), 'src', 'content', 'menuItems', `${slug}.md`);
-        await unlink(filePath);
+    const { error } = await supabase
+        .from('menu_items')
+        .delete()
+        .eq('slug', slug);
 
-        // Redirect back to dashboard
-        return redirect('/dashboard');
-    } catch (error) {
-        console.error('Error deleting menu item:', error);
-        return new Response(JSON.stringify({ error: 'Failed to delete item' }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-        });
+    if (error) {
+        console.error('Supabase error:', error);
+        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
     }
+
+    return redirect('/dashboard');
 };

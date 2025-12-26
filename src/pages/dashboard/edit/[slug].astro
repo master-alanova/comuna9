@@ -1,52 +1,26 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-import { getEntry } from "astro:content";
+import { supabase } from "../../../lib/supabase"; // Importar
 
 const { slug } = Astro.params;
 
-if (!slug) {
+// Validar usuario
+const user = Astro.locals.user;
+if (!user) return Astro.redirect("/login");
+
+if (!slug) return Astro.redirect("/dashboard");
+
+// --- LOGICA NUEVA ---
+const { data: item, error } = await supabase
+    .from("menu_items")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+
+if (error || !item) {
     return Astro.redirect("/dashboard");
 }
-
-const entry = await getEntry("menuItems", slug);
-
-if (!entry) {
-    return Astro.redirect("/dashboard");
-}
-
-const categories = [
-    "Desayunos & Brunch",
-    "Cafetería de Especialidad",
-    "Platos Principales",
-    "Postres",
-    "Bebidas",
-];
-
-let error: string | null = null;
-let success = false;
-
-if (Astro.request.method === "POST") {
-    try {
-        const formData = await Astro.request.formData();
-        formData.append("slug", slug);
-
-        const response = await fetch(new URL("/api/menu/update", Astro.url), {
-            method: "POST",
-            body: formData,
-        });
-
-        if (response.ok) {
-            success = true;
-        } else {
-            error = "Error al actualizar el item";
-        }
-    } catch (e) {
-        error = "Error al procesar la solicitud";
-    }
-}
-
-const item = entry.data;
-const content = entry.body;
+// --------------------
 ---
 
 <Layout title={`Editar ${item.title} - Dashboard`}>
