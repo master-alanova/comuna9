@@ -60,31 +60,29 @@ if (Astro.request.method === "POST") {
                         sortedItems.map((item) => (
                             <div class="menu-item-row">
                                 <div class="item-info">
-                                    <h3>{item.data.title}</h3>
-                                    <p class="item-category">
-                                        {item.data.category}
-                                    </p>
-                                    {item.data.description && (
+                                    <h3>{item.title}</h3>
+                                    <p class="item-category">{item.category}</p>
+                                    {item.description && (
                                         <p class="item-description">
-                                            {item.data.description}
+                                            {item.description}
                                         </p>
                                     )}
                                 </div>
                                 <div class="item-meta">
-                                    {item.data.price && (
+                                    {item.price && (
                                         <span class="item-price">
-                                            {formatPrice(item.data.price)}
+                                            {formatPrice(item.price)}
                                         </span>
                                     )}
                                     <span
                                         class="item-status"
                                         class:list={[
-                                            item.data.published
+                                            item.published
                                                 ? "published"
                                                 : "draft",
                                         ]}
                                     >
-                                        {item.data.published
+                                        {item.published
                                             ? "Publicado"
                                             : "Borrador"}
                                     </span>
