@@ -1,19 +1,21 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
-import { getEntry } from "astro:content";
+import { supabase } from "../../../lib/supabase";
 
 const { slug } = Astro.params;
+// const user = Astro.locals.user;
 
-if (!slug) {
-    return Astro.redirect("/dashboard");
-}
+const user = import.meta.env.ADMIN_USERNAME;
+// 1. Verificaciones de seguridad
+if (!user) return Astro.redirect("/login");
+if (!slug) return Astro.redirect("/dashboard");
 
-const entry = await getEntry("menuItems", slug);
+// 2. Definimos las variables de estado (Esto faltaba y causaba el error)
+let error = null;
+let success = false;
+const content = ""; // Definimos vacío para evitar errores si tu HTML lo llama
 
-if (!entry) {
-    return Astro.redirect("/dashboard");
-}
-
+// 3. Definimos las categorías (Esto faltaba antes)
 const categories = [
     "Desayunos & Brunch",
     "Cafetería de Especialidad",
@@ -22,14 +24,13 @@ const categories = [
     "Bebidas",
 ];
 
-let error: string | null = null;
-let success = false;
-
+// 4. Lógica para GUARDAR los cambios (POST)
 if (Astro.request.method === "POST") {
     try {
         const formData = await Astro.request.formData();
-        formData.append("slug", slug);
+        formData.append("slug", slug); // Aseguramos que el slug vaya en los datos
 
+        // Llamamos a tu API (que ya arreglaste para usar Supabase)
         const response = await fetch(new URL("/api/menu/update", Astro.url), {
             method: "POST",
             body: formData,
@@ -38,15 +39,26 @@ if (Astro.request.method === "POST") {
         if (response.ok) {
             success = true;
         } else {
-            error = "Error al actualizar el item";
+            const data = await response.json();
+            error = data.error || "Error al actualizar el item";
         }
     } catch (e) {
         error = "Error al procesar la solicitud";
+        console.error(e);
     }
 }
 
-const item = entry.data;
-const content = entry.body;
+// 5. Buscar el item actual en la base de datos para mostrarlo
+const { data: item, error: dbError } = await supabase
+    .from("menu_items")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+
+if (dbError || !item) {
+    console.error("Item no encontrado:", dbError);
+    return Astro.redirect("/dashboard");
+}
 ---
 
 <Layout title={`Editar ${item.title} - Dashboard`}>
@@ -140,6 +152,7 @@ const content = entry.body;
                         >
                     </div>
 
+                    <!-- TODO: Implementar contenido adicional 
                     <div class="form-group">
                         <label for="content"
                             >Contenido adicional (Markdown)</label
@@ -148,6 +161,7 @@ const content = entry.body;
                             >{content}</textarea
                         >
                     </div>
+                    -->
 
                     <div class="form-group">
                         <label for="image">URL de imagen</label>

@@ -1,20 +1,22 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getCollection } from "astro:content";
 import { formatPrice } from "../../lib/utils";
+import { supabase } from "../../lib/supabase";
 
-// Get all menu items
-const allMenuItems = await getCollection("menuItems");
+const user = import.meta.env.ADMIN_USERNAME;
+if (!user) {
+    return Astro.redirect("/login");
+}
 
-// Sort by category and order
-const sortedItems = allMenuItems.sort((a, b) => {
-    if (a.data.category === b.data.category) {
-        return a.data.order - b.data.order;
-    }
-    return a.data.category.localeCompare(b.data.category);
-});
+// === CAMBIO AQUÍ: Leemos todos los items de la DB ===
+const { data: menuItems } = await supabase
+    .from("menu_items")
+    .select("*")
+    .order("category", { ascending: true })
+    .order("order", { ascending: true });
 
-// Handle logout
+const sortedItems = menuItems || [];
+
 if (Astro.request.method === "POST") {
     const formData = await Astro.request.formData();
     if (formData.get("action") === "logout") {
@@ -23,8 +25,6 @@ if (Astro.request.method === "POST") {
         return Astro.redirect("/login", 302);
     }
 }
-
-const user = Astro.locals.user;
 ---
 
 <Layout title="Dashboard - Comuna 9">
@@ -34,7 +34,7 @@ const user = Astro.locals.user;
                 <div class="dashboard-nav">
                     <a href="/" class="dashboard-logo">← COMUNA 9</a>
                     <div class="dashboard-user">
-                        <span>Hola, {user.username}</span>
+                        <span>Hola, {user}</span>
                         <form method="POST" style="display: inline;">
                             <input type="hidden" name="action" value="logout" />
                             <button type="submit" class="btn-logout"
@@ -60,31 +60,29 @@ const user = Astro.locals.user;
                         sortedItems.map((item) => (
                             <div class="menu-item-row">
                                 <div class="item-info">
-                                    <h3>{item.data.title}</h3>
-                                    <p class="item-category">
-                                        {item.data.category}
-                                    </p>
-                                    {item.data.description && (
+                                    <h3>{item.title}</h3>
+                                    <p class="item-category">{item.category}</p>
+                                    {item.description && (
                                         <p class="item-description">
-                                            {item.data.description}
+                                            {item.description}
                                         </p>
                                     )}
                                 </div>
                                 <div class="item-meta">
-                                    {item.data.price && (
+                                    {item.price && (
                                         <span class="item-price">
-                                            {formatPrice(item.data.price)}
+                                            {formatPrice(item.price)}
                                         </span>
                                     )}
                                     <span
                                         class="item-status"
                                         class:list={[
-                                            item.data.published
+                                            item.published
                                                 ? "published"
                                                 : "draft",
                                         ]}
                                     >
-                                        {item.data.published
+                                        {item.published
                                             ? "Publicado"
                                             : "Borrador"}
                                     </span>

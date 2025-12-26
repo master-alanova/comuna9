@@ -1,57 +1,27 @@
-import { writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { s as supabase } from '../../../chunks/supabase_DC4BOCeF.mjs';
 export { renderers } from '../../../renderers.mjs';
 
 const POST = async ({ request }) => {
   try {
     const formData = await request.formData();
     const slug = formData.get("slug")?.toString();
-    const title = formData.get("title")?.toString();
-    const description = formData.get("description")?.toString();
-    const price = formData.get("price")?.toString();
-    const category = formData.get("category")?.toString();
-    const order = formData.get("order")?.toString();
-    const image = formData.get("image")?.toString();
-    const content = formData.get("content")?.toString();
-    const published = formData.get("published") === "true";
-    if (!slug || !title || !category) {
-      return new Response(JSON.stringify({ error: "Missing required fields" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-    const frontmatter = {
-      title,
-      ...description && { description },
-      ...price && { price: Number(price) },
-      ...image && { image },
-      category,
-      order: order ? parseInt(order) : 0,
-      published
+    if (!slug) return new Response(JSON.stringify({ error: "Missing slug" }), { status: 400 });
+    const updates = {
+      title: formData.get("title")?.toString(),
+      description: formData.get("description")?.toString(),
+      price: Number(formData.get("price")),
+      category: formData.get("category")?.toString(),
+      order: Number(formData.get("order")),
+      image: formData.get("image")?.toString(),
+      published: formData.get("published") === "true"
     };
-    const mdContent = `---
-${Object.entries(frontmatter).map(([key, value]) => {
-      if (typeof value === "string") {
-        return `${key}: "${value}"`;
-      }
-      return `${key}: ${value}`;
-    }).join("\n")}
----
-
-${content || ""}
-`;
-    const filePath = join(process.cwd(), "src", "content", "menuItems", `${slug}.md`);
-    await writeFile(filePath, mdContent, "utf-8");
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" }
-    });
+    const { error } = await supabase.from("menu_items").update(updates).eq("slug", slug);
+    if (error) {
+      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    }
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (error) {
-    console.error("Error updating menu item:", error);
-    return new Response(JSON.stringify({ error: "Failed to update item" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
+    return new Response(JSON.stringify({ error: "Error updating item" }), { status: 500 });
   }
 };
 
