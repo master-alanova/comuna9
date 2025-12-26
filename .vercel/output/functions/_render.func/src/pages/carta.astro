@@ -1,0 +1,220 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import MenuCard from "../components/MenuCard.astro";
+import { getCollection } from "astro:content";
+
+// Get all published menu items
+const allMenuItems = await getCollection("menuItems", ({ data }) => {
+    return data.published === true;
+});
+
+// Sort by order within each category
+const sortedItems = allMenuItems.sort((a, b) => {
+    if (a.data.category === b.data.category) {
+        return a.data.order - b.data.order;
+    }
+    return 0;
+});
+
+// Group by category
+const itemsByCategory = sortedItems.reduce(
+    (acc, item) => {
+        const category = item.data.category;
+        if (!acc[category]) {
+            acc[category] = [];
+        }
+        acc[category].push(item);
+        return acc;
+    },
+    {} as Record<string, typeof sortedItems>,
+);
+
+// Define category order
+const categoryOrder = [
+    "Desayunos & Brunch",
+    "Cafetería de Especialidad",
+    "Platos Principales",
+    "Postres",
+    "Bebidas",
+];
+
+const sortedCategories = Object.keys(itemsByCategory).sort((a, b) => {
+    const indexA = categoryOrder.indexOf(a);
+    const indexB = categoryOrder.indexOf(b);
+
+    if (indexA === -1 && indexB === -1) return 0;
+    if (indexA === -1) return 1;
+    if (indexB === -1) return -1;
+
+    return indexA - indexB;
+});
+---
+
+<Layout
+    title="Nuestra Carta - Comuna 9"
+    description="Descubrí nuestra carta de comida noble con ingredientes de estación"
+>
+    <Header />
+
+    <main class="carta-page">
+        <!-- Hero Section -->
+        <section class="carta-hero">
+            <div class="container">
+                <h1 class="carta-title">Descubrí Nuestra Carta</h1>
+                <p class="carta-subtitle">
+                    Cada plato cuenta una historia. Ingredientes nobles, de
+                    estación, preparados con respeto y pasión.
+                </p>
+            </div>
+        </section>
+
+        <!-- Menu Sections -->
+        <section class="carta-menu">
+            <div class="container">
+                {
+                    sortedCategories.map((category) => (
+                        <div
+                            class="menu-category"
+                            id={category.toLowerCase().replace(/\s+/g, "-")}
+                        >
+                            <h2 class="category-title">{category}</h2>
+                            <div class="menu-grid">
+                                {itemsByCategory[category].map((item) => (
+                                    <MenuCard
+                                        title={item.data.title}
+                                        description={item.data.description}
+                                        price={item.data.price}
+                                        image={item.data.image}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="carta-cta">
+            <div class="container">
+                <h2>¿Listo para vivir la experiencia?</h2>
+                <p>
+                    Reservá tu mesa y descubrí el verdadero significado de
+                    comida noble
+                </p>
+                <a href="/#reserva" class="btn btn-primary">Reservar Mesa</a>
+            </div>
+        </section>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .carta-page {
+        padding-top: 80px;
+    }
+
+    .carta-hero {
+        background: linear-gradient(
+            135deg,
+            var(--color-bg-dark) 0%,
+            var(--color-accent) 100%
+        );
+        color: var(--color-text-light);
+        padding: var(--spacing-xxl) 0 var(--spacing-xl);
+        text-align: center;
+    }
+
+    .carta-title {
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        font-weight: 300;
+        margin-bottom: var(--spacing-md);
+        color: var(--color-secondary);
+    }
+
+    .carta-subtitle {
+        font-size: clamp(1.125rem, 2vw, 1.5rem);
+        max-width: 700px;
+        margin: 0 auto;
+        opacity: 0.95;
+        line-height: 1.7;
+    }
+
+    .carta-menu {
+        padding: var(--spacing-xxl) 0;
+        background-color: var(--color-bg-light);
+    }
+
+    .menu-category {
+        margin-bottom: var(--spacing-xxl);
+    }
+
+    .menu-category:last-child {
+        margin-bottom: 0;
+    }
+
+    .category-title {
+        font-size: clamp(2rem, 3vw, 3rem);
+        font-weight: 300;
+        color: var(--color-primary);
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-sm);
+        border-bottom: 2px solid var(--color-accent);
+    }
+
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+    }
+
+    .carta-cta {
+        background-color: var(--color-bg-dark);
+        color: var(--color-text-light);
+        padding: var(--spacing-xxl) 0;
+        text-align: center;
+    }
+
+    .carta-cta h2 {
+        font-size: clamp(2rem, 3vw, 3rem);
+        font-weight: 300;
+        margin-bottom: var(--spacing-sm);
+        color: var(--color-secondary);
+    }
+
+    .carta-cta p {
+        font-size: 1.125rem;
+        margin-bottom: var(--spacing-lg);
+        opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+        .carta-page {
+            padding-top: 60px;
+        }
+
+        .carta-hero {
+            padding: var(--spacing-lg) 0;
+        }
+
+        .carta-menu {
+            padding: var(--spacing-lg) 0;
+        }
+
+        .menu-category {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .menu-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .carta-cta {
+            padding: var(--spacing-lg) 0;
+        }
+    }
+</style>
