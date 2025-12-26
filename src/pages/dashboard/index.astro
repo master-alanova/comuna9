@@ -34,7 +34,7 @@ if (Astro.request.method === "POST") {
                 <div class="dashboard-nav">
                     <a href="/" class="dashboard-logo">← COMUNA 9</a>
                     <div class="dashboard-user">
-                        <span>Hola, {user.username}</span>
+                        <span>Hola, {user}</span>
                         <form method="POST" style="display: inline;">
                             <input type="hidden" name="action" value="logout" />
                             <button type="submit" class="btn-logout"
