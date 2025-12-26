@@ -9,11 +9,11 @@ const user = import.meta.env.ADMIN_USERNAME;
 if (!user) return Astro.redirect("/login");
 if (!slug) return Astro.redirect("/dashboard");
 
-// 2. Definir variables de estado
+// 2. Definir variables de estado (IMPORTANTE para que no falle el HTML)
 let error = null;
 let success = false;
 
-// 3. ¡ESTO ES LO QUE TE FALTA! Definir las categorías
+// 3. Definir Categorías (ESTO ES LO QUE TE FALTABA Y CAUSA EL ERROR 500)
 const categories = [
     "Desayunos & Brunch",
     "Cafetería de Especialidad",
@@ -27,7 +27,6 @@ if (Astro.request.method === "POST") {
     try {
         const formData = await Astro.request.formData();
 
-        // Convertir datos del formulario
         const updates = {
             title: formData.get("title")?.toString(),
             category: formData.get("category")?.toString(),
@@ -35,7 +34,7 @@ if (Astro.request.method === "POST") {
             order: Number(formData.get("order")),
             description: formData.get("description")?.toString(),
             image: formData.get("image")?.toString(),
-            published: formData.get("published") === "true", // Checkbox retorna "true" o null
+            published: formData.get("published") === "true",
         };
 
         const { error: updateError } = await supabase
@@ -91,7 +90,7 @@ if (loadError || !item) {
                 {
                     success && (
                         <div class="success-message" role="alert">
-                            Item actualizado exitosamente!
+                            ¡Item actualizado exitosamente!
                         </div>
                     )
                 }
@@ -131,15 +130,14 @@ if (loadError || !item) {
                                 type="number"
                                 id="price"
                                 name="price"
-                                value={item.price || ""}
+                                value={item.price}
                                 min="0"
                                 step="any"
-                                placeholder="3500"
                             />
                         </div>
 
                         <div class="form-group">
-                            <label for="order">Orden de visualización</label>
+                            <label for="order">Orden</label>
                             <input
                                 type="number"
                                 id="order"
@@ -156,17 +154,6 @@ if (loadError || !item) {
                             >{item.description || ""}</textarea
                         >
                     </div>
-
-                    <!-- TODO: Implementar contenido adicional 
-                    <div class="form-group">
-                        <label for="content"
-                            >Contenido adicional (Markdown)</label
-                        >
-                        <textarea id="content" name="content" rows="5"
-                            >{content}</textarea
-                        >
-                    </div>
-                    -->
 
                     <div class="form-group">
                         <label for="image">URL de imagen</label>
@@ -204,35 +191,31 @@ if (loadError || !item) {
 </Layout>
 
 <style>
+    /* ... (Mantén tus estilos CSS aquí abajo) ... */
     .dashboard {
         min-height: 100vh;
         background-color: var(--color-bg-light);
     }
-
     .dashboard-header {
         background-color: var(--color-bg-dark);
         color: var(--color-text-light);
         padding: 1.5rem 0;
     }
-
     .dashboard-logo {
         font-family: var(--font-primary);
         font-size: 1.25rem;
         font-weight: 600;
         color: var(--color-secondary);
     }
-
     .dashboard-content {
         padding: var(--spacing-xl) 0;
     }
-
     .dashboard-content h1 {
         font-size: 2.5rem;
         font-weight: 300;
         margin-bottom: var(--spacing-lg);
         color: var(--color-primary);
     }
-
     .error-message {
         background-color: #fee;
         border: 1px solid #fcc;
@@ -241,7 +224,6 @@ if (loadError || !item) {
         border-radius: 4px;
         margin-bottom: var(--spacing-md);
     }
-
     .success-message {
         background-color: #d4edda;
         border: 1px solid #c3e6cb;
@@ -250,7 +232,6 @@ if (loadError || !item) {
         border-radius: 4px;
         margin-bottom: var(--spacing-md);
     }
-
     .menu-form {
         background-color: #fff;
         padding: var(--spacing-lg);
@@ -258,18 +239,15 @@ if (loadError || !item) {
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         max-width: 900px;
     }
-
     .form-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 1.5rem;
         margin-bottom: 1.5rem;
     }
-
     .form-group {
         margin-bottom: 1.5rem;
     }
-
     .form-group label {
         display: block;
         font-size: 0.875rem;
@@ -279,7 +257,6 @@ if (loadError || !item) {
         margin-bottom: 0.5rem;
         color: var(--color-primary);
     }
-
     .form-group input[type="text"],
     .form-group input[type="number"],
     .form-group select,
@@ -293,7 +270,6 @@ if (loadError || !item) {
         font-family: var(--font-secondary);
         transition: all var(--transition-fast);
     }
-
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus {
@@ -301,7 +277,6 @@ if (loadError || !item) {
         border-color: var(--color-accent);
         box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
     }
-
     .checkbox-label {
         display: flex;
         align-items: center;
@@ -309,23 +284,32 @@ if (loadError || !item) {
         cursor: pointer;
         text-transform: none;
     }
-
     .checkbox-label input[type="checkbox"] {
         width: auto;
         cursor: pointer;
     }
-
     .form-actions {
         display: flex;
         gap: 1rem;
         margin-top: var(--spacing-lg);
     }
-
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+    .btn-primary {
+        background-color: var(--color-primary);
+        color: white;
+    }
     @media (max-width: 768px) {
         .form-grid {
             grid-template-columns: 1fr;
         }
-
         .menu-form {
             padding: var(--spacing-md);
         }
