@@ -3,19 +3,60 @@ import Layout from "../../../layouts/Layout.astro";
 import { supabase } from "../../../lib/supabase";
 
 const { slug } = Astro.params;
-const user = Astro.locals.user;
+// const user = Astro.locals.user;
 
+const user = import.meta.env.ADMIN_USERNAME;
+// 1. Verificaciones de seguridad
 if (!user) return Astro.redirect("/login");
 if (!slug) return Astro.redirect("/dashboard");
 
-// === CAMBIO AQUÍ: Buscamos el item específico en la DB ===
-const { data: item, error } = await supabase
+// 2. Definimos las variables de estado (Esto faltaba y causaba el error)
+let error = null;
+let success = false;
+const content = ""; // Definimos vacío para evitar errores si tu HTML lo llama
+
+// 3. Definimos las categorías (Esto faltaba antes)
+const categories = [
+    "Desayunos & Brunch",
+    "Cafetería de Especialidad",
+    "Platos Principales",
+    "Postres",
+    "Bebidas",
+];
+
+// 4. Lógica para GUARDAR los cambios (POST)
+if (Astro.request.method === "POST") {
+    try {
+        const formData = await Astro.request.formData();
+        formData.append("slug", slug); // Aseguramos que el slug vaya en los datos
+
+        // Llamamos a tu API (que ya arreglaste para usar Supabase)
+        const response = await fetch(new URL("/api/menu/update", Astro.url), {
+            method: "POST",
+            body: formData,
+        });
+
+        if (response.ok) {
+            success = true;
+        } else {
+            const data = await response.json();
+            error = data.error || "Error al actualizar el item";
+        }
+    } catch (e) {
+        error = "Error al procesar la solicitud";
+        console.error(e);
+    }
+}
+
+// 5. Buscar el item actual en la base de datos para mostrarlo
+const { data: item, error: dbError } = await supabase
     .from("menu_items")
     .select("*")
     .eq("slug", slug)
     .single();
 
-if (error || !item) {
+if (dbError || !item) {
+    console.error("Item no encontrado:", dbError);
     return Astro.redirect("/dashboard");
 }
 ---

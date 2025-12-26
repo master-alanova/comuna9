@@ -69,12 +69,12 @@ const sortedCategories = Object.keys(itemsByCategory).sort((a, b) => {
                         >
                             <h2 class="category-title">{category}</h2>
                             <div class="menu-grid">
-                                {itemsByCategory[category].map((item) => (
+                                {itemsByCategory[category].map((item: any) => (
                                     <MenuCard
-                                        title={item.data.title}
-                                        description={item.data.description}
-                                        price={item.data.price}
-                                        image={item.data.image}
+                                        title={item.title}
+                                        description={item.description}
+                                        price={item.price}
+                                        image={item.image}
                                     />
                                 ))}
                             </div>

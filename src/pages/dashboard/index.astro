@@ -3,7 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import { formatPrice } from "../../lib/utils";
 import { supabase } from "../../lib/supabase";
 
-const user = Astro.locals.user;
+const user = import.meta.env.ADMIN_USERNAME;
 if (!user) {
     return Astro.redirect("/login");
 }
