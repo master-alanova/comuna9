@@ -7,13 +7,12 @@ export interface User {
 }
 
 // Demo credentials - In production, use environment variables and proper password hashing
-const DEMO_CREDENTIALS = {
-    username: 'admin',
-    password: 'comuna9admin', // In production: use bcrypt
-};
+
+const DEMO_CREDENTIALS_USERNAME = import.meta.env.ADMIN_USERNAME;
+const DEMO_CREDENTIALS_PASSWORD = import.meta.env.ADMIN_PASSWORD;
 
 export function validateCredentials(username: string, password: string): boolean {
-    return username === DEMO_CREDENTIALS.username && password === DEMO_CREDENTIALS.password;
+    return username === DEMO_CREDENTIALS_USERNAME && password === DEMO_CREDENTIALS_PASSWORD;
 }
 
 export function createSession(user: User): string {
