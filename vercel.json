@@ -1,5 +1,4 @@
 {
-  "framework": "astro",
   "buildCommand": "astro build",
   "outputDirectory": ".vercel/output"
 }
