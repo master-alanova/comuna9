@@ -1,5 +1,6 @@
 import { defineMiddleware } from 'astro:middleware';
-import { validateSession } from './lib/auth';
+// 1. CAMBIO AQUÍ: Importamos el nombre nuevo
+import { validateSessionToken } from './lib/auth';
 
 export const onRequest = defineMiddleware(async (context, next) => {
     const { url, cookies, redirect } = context;
@@ -7,7 +8,14 @@ export const onRequest = defineMiddleware(async (context, next) => {
     // Check if accessing dashboard routes
     if (url.pathname.startsWith('/dashboard')) {
         const sessionToken = cookies.get('session')?.value;
-        const user = validateSession(sessionToken);
+
+        // 2. VALIDACIÓN: Si no hay token, redirigir directo (evita pasar undefined)
+        if (!sessionToken) {
+            return redirect('/login');
+        }
+
+        // 3. CAMBIO AQUÍ: Usamos la nueva función
+        const user = validateSessionToken(sessionToken);
 
         if (!user) {
             return redirect('/login');
