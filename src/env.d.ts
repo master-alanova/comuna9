@@ -3,8 +3,11 @@
 
 import type { User } from './lib/auth';
 
-declare namespace App {
-    interface Locals {
-        user?: User;
+// Al usar 'import', necesitamos 'declare global' para que Astro lo vea
+declare global {
+    namespace App {
+        interface Locals {
+            user?: User;
+        }
     }
 }
